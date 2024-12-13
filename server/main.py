@@ -8,6 +8,7 @@ from korisnik import Korisnik
 app.config['SESSION_TYPE'] = 'filesystem'  # Store session data on the filesystem
 app.config['SESSION_PERMANENT'] = False    # Sessions are not permanent
 app.config['SESSION_USE_SIGNER'] = True    # Encrypt session cookies
+#app.config['SESSION_COOKIE_SECURE'] = True  # Set to True for production with HTTPS
 
 # Initialize session
 Session(app)
@@ -15,29 +16,29 @@ Session(app)
 # Initialize CORS with support for credentials
 CORS(app, origins='http://localhost:3000', supports_credentials=True)  # Allow only localhost:3000 and support credentials
 
-# Add dummy user to the database if not exists
-def add_dummy_user():
-    with app.app_context():  # Wrap the db interaction in an application context
-        if not Korisnik.query.filter(Korisnik.email == "dummy@user.com").first():
-            dummy_user = Korisnik(ime="Dummy", prezime="User", email="dummy@user.com", lozinka="password123")
-            db.session.add(dummy_user)
-            db.session.commit()
-
-# Call the function to add the dummy user during app startup
-add_dummy_user()
-
 # Define routes
 @app.route("/signup", methods=['POST'])
 def signup():
-    email = request.get_json().get('email')
-    password = request.get_json().get('password')
-    if email and password and not Korisnik.query.filter(Korisnik.email == email).first():
-        new_user = Korisnik(email=email, lozinka=password)  # Create user and hash password in the model
-        db.session.add(new_user)
-        db.session.commit()
-        session['user_id'] = new_user.id
-        return new_user.to_dict(), 201
-    return {'error': '422 Unprocessable Entity'}, 422
+    data = request.get_json()
+    email=data.get('email')
+    password=data.get('lozinka')
+    name=data.get('ime')
+    surname=data.get('prezime')
+    print("Received data:", data)
+    
+    if Korisnik.query.filter(Korisnik.email == email).first():
+     print("Email already exists")
+     return {'error': 'Email already exists...'},423
+    
+    if password and name and surname and email:
+     new_user = Korisnik(ime=name,prezime=surname,email=email, lozinka=password)  # Create user and hash password in the model
+     db.session.add(new_user)
+     db.session.commit()
+     session['user_id'] = new_user.id
+     return new_user.to_dict(), 201
+    else:
+     return {'error': 'Invalid input...'},423
+  
 
 @app.route("/login", methods=['POST'])
 def login():
@@ -71,7 +72,7 @@ def logout():
 # Basic Route
 @app.route("/", methods=['GET'])
 def home():
-    return jsonify({"message": "Welcome to the ap!"}), 200
+    return jsonify({"message": "Welcome to the app!"}), 200
 
 # Run the app
 if __name__ == "__main__":

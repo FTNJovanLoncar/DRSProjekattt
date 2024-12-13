@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Pocetna from './Pocetna';
 import Login from './Login';
 import { useState, useEffect } from "react";
+import Registration from './Register';
 
 function App() {
   const [user, setUser] = useState(null); // State to hold logged-in user
@@ -31,6 +32,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Pocetna />} /> {/* Default route */}
           <Route path="/login" element={<Login onLogin={setUser} />} /> {/* Pass setUser to Login */}
+          <Route path="/Registracija" element={<Registration onRegister={setUser} />} /> {/* Pass setUser to Login */}
         </Routes>
       </BrowserRouter>
     </div>
