@@ -4,6 +4,8 @@ import Pocetna from './Pocetna';
 import Login from './Login';
 import { useState, useEffect } from "react";
 import Registration from './Register';
+import NewAnketa from './NewAnketa';
+import Overview from './Overview';
 
 function App() {
   const [user, setUser] = useState(null); // State to hold logged-in user
@@ -33,6 +35,8 @@ function App() {
           <Route path="/" element={<Pocetna />} /> {/* Default route */}
           <Route path="/login" element={<Login onLogin={setUser} />} /> {/* Pass setUser to Login */}
           <Route path="/Registracija" element={<Registration onRegister={setUser} />} /> {/* Pass setUser to Login */}
+          <Route path="/Create" element={<NewAnketa userId={user?.id} />} />
+          <Route path="/Overview/:id" element={<Overview />} />
         </Routes>
       </BrowserRouter>
     </div>

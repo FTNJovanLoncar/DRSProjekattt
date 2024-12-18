@@ -1,19 +1,23 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import "./Pocetna.css";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Pocetna = () => {
     const [email, setEmail] = useState('');
+    const [anketas, setAnketas] = useState([]); // State to store the list of Anketa
     const [loading, setLoading] = useState(true); // State to handle loading
     const [error, setError] = useState(null); // State to handle errors
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/check_session', { withCredentials: true });
-                setEmail(response.data.email || "No email provided");
+                const sessionResponse = await axios.get('http://localhost:5000/check_session', { withCredentials: true });
+                setEmail(sessionResponse.data.email || "No email provided");
+
+                const anketaResponse = await axios.get('http://localhost:5000/anketas', { withCredentials: true });
+                setAnketas(anketaResponse.data); // Set the fetched list of Anketa
                 setError(null); // Clear error if successful
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -46,8 +50,25 @@ const Pocetna = () => {
             ) : error ? (
                 <div className="error-message">{error}</div> // Show error message
             ) : (
-                <div>Email: {email}</div> // Show email when data is fetched successfully
+                <>
+                    <div>Email: {email}</div>
+                    <h3>Your Anketas</h3>
+                    <ul>
+                        {anketas.map((anketa) => (
+                            <li key={anketa.id}>
+                                <Link
+                                    to={`/Overview/${anketa.id}`} // Ensure anketa.id is passed correctly
+                                    style={{ color: 'black', textDecoration: 'underline' }}
+                                >
+                                    {anketa.name}
+                                </Link>
+
+                            </li>
+                        ))}
+                    </ul>
+                </>
             )}
+            <Link to="/Create" className="nav-link" style={{ color: 'black', fontWeight: "bold" }}>Napravi novu anketu</Link>
         </div>
     );
 };
