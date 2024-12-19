@@ -1,0 +1,87 @@
+.anketa-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #f5f5f5;
+  }
+  
+  .anketa-form {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    width: 320px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  
+  .anketa-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-label {
+    margin-bottom: 5px;
+    color: #555;
+    font-weight: 500;
+  }
+  
+  .form-input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .form-input:focus {
+    border-color: #007BFF;
+    outline: none;
+  }
+  
+  .error-message {
+    margin-bottom: 15px;
+    color: #b30000;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .add-button {
+    width: 100%;
+    padding: 10px;
+    background: #17a2b8;
+    border: none;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  
+  .add-button:hover {
+    background: #138496;
+  }
+  
+  .submit-button {
+    width: 100%;
+    padding: 10px;
+    background: #007BFF;
+    border: none;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .submit-button:hover {
+    background: #0056b3;
+  }
+  

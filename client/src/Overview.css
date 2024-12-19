@@ -1,0 +1,110 @@
+.overview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    background: #f5f5f5;
+    min-height: 100vh;
+  }
+  
+  .overview-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .overview-list {
+    list-style: none;
+    padding: 0;
+    width: 320px;
+  }
+  
+  .overview-list-item {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  }
+  
+  .element-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .element-text {
+    font-size: 16px;
+    color: #555;
+  }
+  
+  .edit-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .edit-input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .edit-input:focus {
+    border-color: #007BFF;
+    outline: none;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .save-button,
+  .cancel-button,
+  .edit-button {
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .save-button {
+    background: #28a745;
+    color: #fff;
+  }
+  
+  .save-button:hover {
+    background: #218838;
+  }
+  
+  .cancel-button {
+    background: #dc3545;
+    color: #fff;
+  }
+  
+  .cancel-button:hover {
+    background: #c82333;
+  }
+  
+  .edit-button {
+    background: #007BFF;
+    color: #fff;
+  }
+  
+  .edit-button:hover {
+    background: #0056b3;
+  }
+  
+  .loading-message,
+  .error-message,
+  .no-anketa {
+    color: #333;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
+import './NewAnketa.css'; // Import the new CSS file
 
 function NewAnketa({ userId }) {
     const [imeAnkete, setImeAnkete] = useState("");
@@ -57,43 +58,46 @@ function NewAnketa({ userId }) {
     };
   
     return (
-      <div className="anketa-form">
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>Ime Ankete</label>
+      <div className="anketa-form-container">
+        <form onSubmit={handleSubmit} className="anketa-form">
+          <h2 className="anketa-title">Nova Anketa</h2>
+          <div className="form-group">
+            <label className="form-label">Ime Ankete</label>
             <input
               type="text"
+              className="form-input"
               value={imeAnkete}
               onChange={handleImeChange}
             />
           </div>
   
           {pitanja.map((pitanje, index) => (
-            <div key={index}>
-              <label>Pitanje {index + 1}</label>
+            <div key={index} className="form-group">
+              <label className="form-label">Pitanje {index + 1}</label>
               <input
                 type="text"
+                className="form-input"
                 value={pitanje}
                 onChange={(e) => handlePitanjeChange(index, e.target.value)}
               />
             </div>
           ))}
   
-          <button type="button" onClick={dodajPitanje}>
-            +
+          <button type="button" className="add-button" onClick={dodajPitanje}>
+            Dodaj Pitanje
           </button>
           
-          <button type="submit">
+          <button type="submit" className="submit-button">
             Spremi Anketu
           </button>
-          {error && <div className="error">{error}</div>}
+          {error && <div className="error-message">{error}</div>}
         </form>
       </div>
     );
 }
 
 NewAnketa.propTypes = {
-  userId: PropTypes.number // userId should be a number
+  userId: PropTypes.number
 };
 
 export default NewAnketa;

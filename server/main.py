@@ -128,6 +128,28 @@ def get_anketa(anketa_id):
     return anketa.to_dict(), 200
 
 
+@app.route("/anketas/<int:anketa_id>", methods=["PUT"])
+def update_anketa(anketa_id):
+    if 'user_id' not in session:
+        return {"error": "User not logged in"}, 401
+
+    anketa = Anketa.query.filter_by(id=anketa_id, user_id=session['user_id']).first()
+    if not anketa:
+        return {"error": "Anketa not found"}, 404
+
+    data = request.get_json()
+    # Update the elementi if provided
+    if 'elementi' in data:
+        anketa.elementi = data['elementi']
+
+    # You can also update `naziv` if sent
+    if 'naziv' in data:
+        anketa.naziv = data['naziv']
+
+    db.session.commit()
+    return anketa.to_dict(), 200
+
+
 
 
 # Basic Route

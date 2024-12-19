@@ -2,6 +2,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
+import './Login.css'; // Import the new CSS file
 
 function Login({ onLogin }) {
   const [username, setUsername] = useState("");
@@ -29,7 +30,6 @@ function Login({ onLogin }) {
       body: JSON.stringify({ email: username, password }),
       credentials: 'include',
     })
-    
     .then((response) => {
         setLoading(false);
         console.log(response);
@@ -49,34 +49,36 @@ function Login({ onLogin }) {
         setError(`An error occurred: ${err.message}`); // More descriptive error
         console.error("Login error details:", err);
     });
-};
-
+  };
 
   return (
-    <div className="login-form">
-      {loading && <div>Loading...</div>}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Username</label>
+    <div className="login-form-container">
+      {loading && <div className="loading-message">Loading...</div>}
+      <form onSubmit={handleSubmit} className="login-form">
+        <h2 className="login-title">Login</h2>
+        <div className="form-group">
+          <label className="form-label">Username</label>
           <input
             type="text"
+            className="form-input"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
         </div>
 
-        <div>
-          <label>Password</label>
+        <div className="form-group">
+          <label className="form-label">Password</label>
           <input
             type="password"
+            className="form-input"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
-        {error && <div className="error">{error}</div>}
+        {error && <div className="error-message">{error}</div>}
 
-        <button type="submit" disabled={loading}>
+        <button type="submit" className="submit-button" disabled={loading}>
           {loading ? "Logging in..." : "Submit"}
         </button>
       </form>

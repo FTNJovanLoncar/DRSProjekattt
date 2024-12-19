@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import "./Pocetna.css";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './Pocetna.css'; // Import the new CSS file
 
 const Pocetna = () => {
     const [email, setEmail] = useState('');
@@ -32,43 +32,48 @@ const Pocetna = () => {
     }, []);
 
     return (
-        <div className="stranica">
-            <ul className="nav nav-pills nav-fill">
+        <div className="pocetna-container">
+            <ul className="nav nav-pills nav-fill navigation-bar">
                 <li className="nav-item">
-                    <Link to="/" className="nav-link active" style={{ color: 'black', fontWeight: "bold" }}>Početna</Link>
+                    <Link to="/" className="nav-link active">Početna</Link>
                 </li>
                 <li className="nav-item">
-                    <Link to="/Login" className="nav-link" style={{ color: 'black', fontWeight: "bold" }}>Prijava</Link>
+                    <Link to="/Login" className="nav-link">Prijava</Link>
                 </li>
                 <li className="nav-item">
-                    <Link to="/Registracija" className="nav-link" style={{ color: 'black', fontWeight: "bold" }}>Registracija</Link>
+                    <Link to="/Registracija" className="nav-link">Registracija</Link>
                 </li>
             </ul>
 
             {loading ? (
-                <div>Loading...</div> // Show loading indicator
+                <div className="loading-message">Loading...</div>
             ) : error ? (
-                <div className="error-message">{error}</div> // Show error message
+                <div className="error-message">{error}</div>
             ) : (
-                <>
-                    <div>Email: {email}</div>
-                    <h3>Your Anketas</h3>
-                    <ul>
-                        {anketas.map((anketa) => (
-                            <li key={anketa.id}>
-                                <Link
-                                    to={`/Overview/${anketa.id}`} // Ensure anketa.id is passed correctly
-                                    style={{ color: 'black', textDecoration: 'underline' }}
-                                >
-                                    {anketa.name}
-                                </Link>
-
-                            </li>
-                        ))}
-                    </ul>
-                </>
+                <div className="content-container">
+                    <div className="user-info">
+                        <span className="user-email">Email: {email}</span>
+                    </div>
+                    <h3 className="section-title">Your Anketas</h3>
+                    {anketas.length === 0 ? (
+                        <div className="no-anketas">No Anketas found.</div>
+                    ) : (
+                        <ul className="anketas-list">
+                            {anketas.map((anketa) => (
+                                <li key={anketa.id} className="anketa-item">
+                                    <Link
+                                        to={`/Overview/${anketa.id}`}
+                                        className="anketa-link"
+                                    >
+                                        {anketa.name}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
             )}
-            <Link to="/Create" className="nav-link" style={{ color: 'black', fontWeight: "bold" }}>Napravi novu anketu</Link>
+            <Link to="/Create" className="create-link">Napravi novu anketu</Link>
         </div>
     );
 };
