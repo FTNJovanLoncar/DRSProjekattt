@@ -6,37 +6,38 @@ import { useState, useEffect } from "react";
 import Registration from './Register';
 import NewAnketa from './NewAnketa';
 import Overview from './Overview';
+import Email from './Email'; // Import the new Email component
 
 function App() {
-  const [user, setUser] = useState(null); // State to hold logged-in user
+  const [user, setUser] = useState(null);
 
-  // Check session on initial load
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await fetch("http://localhost:5000/check_session", {
-          credentials: 'include', // Ensure cookies are sent
+          credentials: 'include',
         });
         if (response.ok) {
           const data = await response.json();
-          setUser(data); // Set logged-in user data
+          setUser(data);
         }
       } catch (error) {
         console.error("Error checking session:", error);
       }
     }
     fetchData();
-  }, []); // Run only once on component mount
+  }, []);
 
   return (
     <div>
-      <BrowserRouter> {/* Ensure BrowserRouter wraps the entire app */}
+      <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Pocetna />} /> {/* Default route */}
-          <Route path="/login" element={<Login onLogin={setUser} />} /> {/* Pass setUser to Login */}
-          <Route path="/Registracija" element={<Registration onRegister={setUser} />} /> {/* Pass setUser to Login */}
+          <Route path="/" element={<Pocetna />} />
+          <Route path="/login" element={<Login onLogin={setUser} />} />
+          <Route path="/Registracija" element={<Registration onRegister={setUser} />} />
           <Route path="/Create" element={<NewAnketa userId={user?.id} />} />
           <Route path="/Overview/:id" element={<Overview />} />
+          <Route path="/Email" element={<Email />} /> {/* Add this route */}
         </Routes>
       </BrowserRouter>
     </div>

@@ -97,6 +97,22 @@
     font-size: 14px;
     text-decoration: none;
   }
+
+  .email-button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-left: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .email-button:hover {
+    background-color: #0056b3;
+  }
+  
   
   .create-link:hover {
     text-decoration: underline;

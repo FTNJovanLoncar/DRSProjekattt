@@ -6,18 +6,72 @@ from config import db, app  # Import db and app from config
 from korisnik import Korisnik
 from anketa import Anketa
 from anketa import JsonEncodedList
+from flask_mail import Mail, Message
 
 # Configuration for Flask-Session
 app.config['SESSION_TYPE'] = 'filesystem'  # Store session data on the filesystem
 app.config['SESSION_PERMANENT'] = False    # Sessions are not permanent
 app.config['SESSION_USE_SIGNER'] = True    # Encrypt session cookies
 # app.config['SESSION_COOKIE_SECURE'] = True  # Set to True for production with HTTPS
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Use your email provider's SMTP server
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'zerobraine.lastloncar@gmail.com'  # Replace with your email
+app.config['MAIL_PASSWORD'] = 'nwil njdj cjyx heuf'        # Replace with your password
+app.config['MAIL_DEFAULT_SENDER'] = 'zerobraine.lastloncar@gmail.com'
+
+mail = Mail(app)
 
 # Initialize session
 Session(app)
 
 # Initialize CORS with support for credentials
 CORS(app, origins='http://localhost:3000', supports_credentials=True)  # Allow only localhost:3000 and support credentials
+
+
+@app.route('/send_survey', methods=['POST'])
+def send_survey():
+    data = request.get_json()
+    emails = data.get('emails', [])
+    survey = data.get('survey')
+
+    if not emails or not survey:
+        return {'error': 'Invalid input'}, 400
+
+    subject = f"Survey: {survey['name']}"
+    for email in emails:
+        body = f"We invite you to participate in the survey: {survey['name']}\n\n"
+        for idx, question in enumerate(survey['elementi']):
+            body += f"{idx + 1}. {question['text']}\n"
+            for i in range(1, 6):  # Ratings 1 to 5
+                body += f"   {i}: http://localhost:5000/respond?anketa_id={survey['id']}&question={idx}&rating={i}\n"
+
+        try:
+            msg = Message(subject, recipients=[email], body=body)
+            mail.send(msg)
+        except Exception as e:
+            print(f"Error sending email to {email}: {e}")
+
+    return {'message': 'Survey emails sent successfully'}, 200
+
+
+@app.route('/respond', methods=['GET'])
+def respond_to_survey():
+    anketa_id = request.args.get('anketa_id')
+    question_idx = int(request.args.get('question'))
+    rating = int(request.args.get('rating'))
+
+    # Validate parameters
+    anketa = Anketa.query.filter_by(id=anketa_id).first()
+    if not anketa or question_idx >= len(anketa.elementi) or not (1 <= rating <= 5):
+        return {'error': 'Invalid response'}, 400
+
+    # Store the response
+    anketa.elementi[question_idx]['broj'] += rating
+    db.session.commit()
+
+    return jsonify({'message': 'Thank you for your response!'}), 200
+
 
 # Define routes
 @app.route("/signup", methods=['POST'])
