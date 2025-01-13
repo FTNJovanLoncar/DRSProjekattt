@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import './Overview.css'; // Import the new CSS file
+import './Overview.css';
 
 const Overview = () => {
     const { id } = useParams();
@@ -9,7 +9,6 @@ const Overview = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Track the index of the element being edited and the temporary text value
     const [editIndex, setEditIndex] = useState(null);
     const [editText, setEditText] = useState("");
 
@@ -17,12 +16,12 @@ const Overview = () => {
         const fetchAnketa = async () => {
             try {
                 const response = await axios.get(`http://localhost:5000/anketas/${id}`, { withCredentials: true });
-                setAnketa(response.data); // Set the fetched anketa
+                setAnketa(response.data);
             } catch (err) {
                 console.error("Error fetching Anketa:", err);
                 setError("Failed to fetch Anketa data.");
             } finally {
-                setLoading(false); // Stop loading spinner
+                setLoading(false);
             }
         };
 
@@ -43,28 +42,23 @@ const Overview = () => {
         return <div className="no-anketa">No Anketa found.</div>;
     }
 
-    // Start editing a specific element
     const handleEdit = (index) => {
         setEditIndex(index);
         setEditText(anketa.elementi[index].text);
     };
 
-    // Cancel editing
     const handleCancel = () => {
         setEditIndex(null);
         setEditText("");
     };
 
-    // Save the edited text
     const handleSave = async (index) => {
-        // Create a new copy of elementi
         const updatedElementi = [...anketa.elementi];
         updatedElementi[index].text = editText;
 
         const updatedAnketa = { ...anketa, elementi: updatedElementi };
 
         try {
-            // Send the updated Anketa to the backend
             await axios.put(`http://localhost:5000/anketas/${id}`, updatedAnketa, {
                 withCredentials: true,
                 headers: {
@@ -72,7 +66,6 @@ const Overview = () => {
                 }
             });
 
-            // Update local state
             setAnketa(updatedAnketa);
             setEditIndex(null);
             setEditText("");
@@ -103,7 +96,10 @@ const Overview = () => {
                             </div>
                         ) : (
                             <div className="element-container">
-                                <span className="element-text">{element.text} - Votes: {element.broj}</span>
+                                <span className="element-text">
+                                    {element.text} - Votes: {element.broj_ocena || 0} - 
+                                    Average: {element.prosek?.toFixed(2) || "N/A"}
+                                </span>
                                 <button className="edit-button" onClick={() => handleEdit(index)}>Edit</button>
                             </div>
                         )}

@@ -7,6 +7,7 @@ import Registration from './Register';
 import NewAnketa from './NewAnketa';
 import Overview from './Overview';
 import Email from './Email'; // Import the new Email component
+import Survey from "./Survey";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -38,6 +39,7 @@ function App() {
           <Route path="/Create" element={<NewAnketa userId={user?.id} />} />
           <Route path="/Overview/:id" element={<Overview />} />
           <Route path="/Email" element={<Email />} /> {/* Add this route */}
+          <Route path="/survey/:surveyId" element={<Survey />} />
         </Routes>
       </BrowserRouter>
     </div>

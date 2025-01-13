@@ -7,6 +7,8 @@ from korisnik import Korisnik
 from anketa import Anketa
 from anketa import JsonEncodedList
 from flask_mail import Mail, Message
+import logging
+from sqlalchemy.orm.attributes import flag_modified
 
 # Configuration for Flask-Session
 app.config['SESSION_TYPE'] = 'filesystem'  # Store session data on the filesystem
@@ -29,8 +31,11 @@ Session(app)
 CORS(app, origins='http://localhost:3000', supports_credentials=True)  # Allow only localhost:3000 and support credentials
 
 
+
+
 @app.route('/send_survey', methods=['POST'])
 def send_survey():
+    print("ALO USLO SAM")
     data = request.get_json()
     emails = data.get('emails', [])
     survey = data.get('survey')
@@ -39,12 +44,17 @@ def send_survey():
         return {'error': 'Invalid input'}, 400
 
     subject = f"Survey: {survey['name']}"
+
     for email in emails:
         body = f"We invite you to participate in the survey: {survey['name']}\n\n"
         for idx, question in enumerate(survey['elementi']):
             body += f"{idx + 1}. {question['text']}\n"
             for i in range(1, 6):  # Ratings 1 to 5
                 body += f"   {i}: http://localhost:5000/respond?anketa_id={survey['id']}&question={idx}&rating={i}\n"
+
+        # Dodavanje glavnog linka za pregled ankete
+        survey_link = f"http://localhost:3000/survey/{survey['id']}"
+        body += f"\nTo review the survey and its details, click the link below:\n{survey_link}\n"
 
         try:
             msg = Message(subject, recipients=[email], body=body)
@@ -55,22 +65,57 @@ def send_survey():
     return {'message': 'Survey emails sent successfully'}, 200
 
 
+
 @app.route('/respond', methods=['GET'])
-def respond_to_survey():
+def respond():
     anketa_id = request.args.get('anketa_id')
     question_idx = int(request.args.get('question'))
     rating = int(request.args.get('rating'))
 
-    # Validate parameters
-    anketa = Anketa.query.filter_by(id=anketa_id).first()
-    if not anketa or question_idx >= len(anketa.elementi) or not (1 <= rating <= 5):
-        return {'error': 'Invalid response'}, 400
+    anketa = Anketa.query.get(anketa_id)
+    
+    if anketa:
+        if question_idx < len(anketa.elementi):
+            elementi = anketa.elementi
+            question = elementi[question_idx]
 
-    # Store the response
-    anketa.elementi[question_idx]['broj'] += rating
-    db.session.commit()
+            # Ažuriraj broj glasova (suma ocena)
+            if 'broj' in question:
+                question['broj'] += rating
+            else:
+                question['broj'] = rating  # Ako ne postoji, inicijalizuj
 
-    return jsonify({'message': 'Thank you for your response!'}), 200
+            # Ažuriraj broj ocena (koliko puta je ocenjeno)
+            if 'broj_ocena' in question:
+                question['broj_ocena'] += 1
+            else:
+                question['broj_ocena'] = 1
+
+            # Izračunaj prosek za pitanje
+            question['prosek'] = question['broj'] / question['broj_ocena']
+
+            # Ažuriraj elemente i sačuvaj u bazi
+            elementi[question_idx] = question
+            anketa.elementi = elementi
+            flag_modified(anketa, 'elementi')
+            db.session.commit()
+
+            print(f"Updated question {question_idx}: {question}")
+
+            return jsonify({
+                'message': 'Thank you for your response!',
+                'updated_question': question,
+                'updated_elementi': elementi
+            }), 200
+        else:
+            return jsonify({'error': 'Invalid question index'}), 400
+    return jsonify({'error': 'Anketa not found'}), 404
+
+
+
+
+
+
 
 
 # Define routes
@@ -213,4 +258,5 @@ def home():
 
 # Run the app
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
+
