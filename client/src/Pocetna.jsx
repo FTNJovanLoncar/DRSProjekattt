@@ -59,9 +59,9 @@ const Pocetna = () => {
           <div className="user-info">
             <span className="user-email">Email: {email}</span>
           </div>
-          <h3 className="section-title">Your Anketas</h3>
+          <h3 className="section-title">Tvoje ankete</h3>
           {anketas.length === 0 ? (
-            <div className="no-anketas">No Anketas found.</div>
+            <div className="no-anketas">Nijedna anketa nije pronadjena.</div>
           ) : (
             <ul className="anketas-list">
               {anketas.map((anketa) => (

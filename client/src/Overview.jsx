@@ -77,35 +77,37 @@ const Overview = () => {
 
     return (
         <div className="overview-container">
-            <h1 className="overview-title">{anketa.naziv}</h1>
-            <ul className="overview-list">
-                {anketa.elementi.map((element, index) => (
-                    <li key={index} className="overview-list-item">
-                        {editIndex === index ? (
-                            <div className="edit-container">
-                                <input
-                                    type="text"
-                                    className="edit-input"
-                                    value={editText}
-                                    onChange={(e) => setEditText(e.target.value)}
-                                />
-                                <div className="button-group">
-                                    <button className="save-button" onClick={() => handleSave(index)}>Save</button>
-                                    <button className="cancel-button" onClick={handleCancel}>Cancel</button>
+            <h1 className="overview-title">Pregled pitanja: {anketa.naziv}</h1>
+            <div className="overview-content">
+                <ul className="overview-list">
+                    {anketa.elementi.map((element, index) => (
+                        <li key={index} className="overview-list-item">
+                            {editIndex === index ? (
+                                <div className="edit-container">
+                                    <input
+                                        type="text"
+                                        className="edit-input"
+                                        value={editText}
+                                        onChange={(e) => setEditText(e.target.value)}
+                                    />
+                                    <div className="button-group">
+                                        <button className="save-button" onClick={() => handleSave(index)}>Save</button>
+                                        <button className="cancel-button" onClick={handleCancel}>Cancel</button>
+                                    </div>
                                 </div>
-                            </div>
-                        ) : (
-                            <div className="element-container">
-                                <span className="element-text">
-                                    {element.text} - Votes: {element.broj_ocena || 0} - 
-                                    Average: {element.prosek?.toFixed(2) || "N/A"}
-                                </span>
-                                <button className="edit-button" onClick={() => handleEdit(index)}>Edit</button>
-                            </div>
-                        )}
-                    </li>
-                ))}
-            </ul>
+                            ) : (
+                                <div className="element-container">
+                                    <span className="element-text">
+                                        {element.text} - Votes: {element.broj_ocena || 0} - 
+                                        Average: {element.prosek?.toFixed(2) || "N/A"}
+                                    </span>
+                                    <button className="edit-button" onClick={() => handleEdit(index)}>Edit</button>
+                                </div>
+                            )}
+                        </li>
+                    ))}
+                </ul>
+            </div>
         </div>
     );
 };
